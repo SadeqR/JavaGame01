@@ -17,7 +17,7 @@ public class Game extends Canvas implements Runnable {
 	
 	private JFrame frame;
 	public boolean running = false;
-	
+	public int tickCount = 0;
 	public Game() {
 		setMinimumSize(new Dimension(WIDTH*SCALE,HEIGHT*SCALE));
 		setMaximumSize(new Dimension(WIDTH*SCALE,HEIGHT*SCALE));
@@ -46,9 +46,59 @@ public class Game extends Canvas implements Runnable {
 	}
 	
 	public void run() {
+		//different system will run while loop faster/slower
+		long lastTime = System.nanoTime();
+		//how may ns in 1 tick for said machine
+		double nsPerTick = 1000000000D/60D;
+		
+		int ticks = 0;
+		int frames = 0;
+		
+		long lastTimer = System.currentTimeMillis();
+		//delta is how many ns have gone by so far
+		double delta=0;
+		
 		while(running){
-			System.out.println("hello world");
+			long now = System.nanoTime();
+			delta += (now - lastTime)/nsPerTick;
+			lastTime = now;
+			
+			boolean shouldRender = true;
+			
+			while(delta>=1) {
+				ticks++;
+				tick();
+				delta-=1;
+				shouldRender = true;
+			}
+			try {
+				Thread.sleep(2);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			if(shouldRender) {
+				frames++;
+				render();
+			}
+			
+			if(System.currentTimeMillis()-lastTimer >= 1000) {
+				lastTimer +=1000;
+				System.out.println(frames + ", "+ ticks);
+				frames=0;
+				ticks=0;
+			}
+			
 		}
+	}
+	
+	//updates the logic of game
+	public void tick() {
+		tickCount++;
+	}
+	
+	//prints out what the logic/tick method says to print
+	public void render() {
+		
 	}
 
 	public static void main(String[] args) {
