@@ -2,7 +2,12 @@ package com.sadeq.game;
 
 import java.awt.BorderLayout;
 import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 
 import javax.swing.JFrame;
 
@@ -18,6 +23,10 @@ public class Game extends Canvas implements Runnable {
 	private JFrame frame;
 	public boolean running = false;
 	public int tickCount = 0;
+	
+	private BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+	private int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+	
 	public Game() {
 		setMinimumSize(new Dimension(WIDTH*SCALE,HEIGHT*SCALE));
 		setMaximumSize(new Dimension(WIDTH*SCALE,HEIGHT*SCALE));
@@ -93,12 +102,23 @@ public class Game extends Canvas implements Runnable {
 	
 	//updates the logic of game
 	public void tick() {
-		tickCount++;
+		tickCount ++;
 	}
 	
 	//prints out what the logic/tick method says to print
 	public void render() {
+		BufferStrategy bs = getBufferStrategy();
+		if(bs == null) {
+			createBufferStrategy(3);
+			return;
+		}
+		Graphics g = bs.getDrawGraphics();
 		
+		g.setColor(Color.BLACK);
+		g.fillRect(0, 0, getWidth(), getHeight());
+		
+		g.dispose();
+		bs.show();
 	}
 
 	public static void main(String[] args) {
