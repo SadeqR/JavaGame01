@@ -103,6 +103,10 @@ public class Game extends Canvas implements Runnable {
 	//updates the logic of game
 	public void tick() {
 		tickCount ++;
+		
+		for(int i=0; i<pixels.length; i++) {
+			pixels[i]=i+tickCount;
+		}
 	}
 	
 	//prints out what the logic/tick method says to print
@@ -114,8 +118,7 @@ public class Game extends Canvas implements Runnable {
 		}
 		Graphics g = bs.getDrawGraphics();
 		
-		g.setColor(Color.BLACK);
-		g.fillRect(0, 0, getWidth(), getHeight());
+		g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
 		
 		g.dispose();
 		bs.show();
